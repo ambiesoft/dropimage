@@ -53,6 +53,24 @@ QImage GetImageFromDrop(const QMimeData* mime, const QString& format)
     QByteArray data = mime->data(format);
     if(data.isNull() || data.isEmpty())
         return QImage();
+
+    {
+        QFile file("xxx");
+         // Trying to open in WriteOnly and Text mode
+         if(!file.open(QFile::WriteOnly))
+         {
+             qDebug() << " Could not open file for writing";
+             return QImage();
+         }
+
+         // To write text, we use operator<<(),
+         // which is overloaded to take
+         // a QTextStream on the left
+         // and data types (including QString) on the right
+        file.write(data);
+         file.flush();
+         file.close();
+    }
     QBuffer buffer(&data);
     if(!buffer.open(QIODevice::ReadOnly))
         return QImage();
@@ -76,12 +94,16 @@ void MainWindow::dropEvent(QDropEvent *event)
     }
 
     static QStringList sss({
-                               "application/x-qt-windows-mime;value=\"DragImageBits\"",
-                               "application/x-qt-windows-mime;value=\"DragContext\"",
-                               "application/x-qt-windows-mime;value=\"chromium/x-renderer-taint\"",
-                               "application/x-qt-windows-mime;value=\"FileGroupDescriptorW\"",
-                               "application/x-qt-windows-mime;value=\"FileContents\"",
-                               "application/x-qt-windows-mime;value=\"UniformResourceLocatorW\"",
+                               "text/x-moz-url",
+                               "text/uri-list",
+                               "text/plain",
+                               "text/html",
+//                               "application/x-qt-windows-mime;value=\"DragImageBits\"",
+//                               "application/x-qt-windows-mime;value=\"DragContext\"",
+//                               "application/x-qt-windows-mime;value=\"chromium/x-renderer-taint\"",
+//                               "application/x-qt-windows-mime;value=\"FileGroupDescriptorW\"",
+//                               "application/x-qt-windows-mime;value=\"FileContents\"",
+//                               "application/x-qt-windows-mime;value=\"UniformResourceLocatorW\"",
                            });
     for(auto&& format:sss)
     {
