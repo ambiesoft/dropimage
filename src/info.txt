@@ -48,3 +48,10 @@ IE
 "application/x-qt-windows-mime;value=\"DragImageBits\"",
 "application/x-qt-windows-mime;value=\"DragContext\""
 )
+
+
+
+"text/x-moz-url":
+https://auctions.c.yimg.jp/images.auctions.yahoo.co.jp/image/dr000/auc0509/users/f48785a2de25513d41e9d2ca5070d0fdd300e091/i-img600x450-1568414465cwptfz878005.jpg
+MEMORY 8GB (4GB×2個) DDR3 1333 PC3-10600U SAMSUNG_画像1
+

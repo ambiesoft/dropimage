@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QBuffer>
 
+#include "htmlparser.h"
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -20,17 +22,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     setAcceptDrops(true);
 
-    QString imageFile = "C:\\Users\\afTvber\\Desktop\\aaa";
-    QImageReader reader(imageFile);
-    reader.setAutoTransform(true);
-    const QImage newImage = reader.read();
-    if (newImage.isNull()) {
-        QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
-                                 tr("Cannot load %1: %2")
-                                 .arg(QDir::toNativeSeparators(imageFile), reader.errorString()));
-        return;
-    }
-    ui->imageLabel->setPixmap(QPixmap::fromImage(newImage));
+//    QString imageFile = "C:\\Users\\afTvber\\Desktop\\aaa";
+//    QImageReader reader(imageFile);
+//    reader.setAutoTransform(true);
+//    const QImage newImage = reader.read();
+//    if (newImage.isNull()) {
+//        QMessageBox::information(this, QGuiApplication::applicationDisplayName(),
+//                                 tr("Cannot load %1: %2")
+//                                 .arg(QDir::toNativeSeparators(imageFile), reader.errorString()));
+//        return;
+//    }
+//    ui->imageLabel->setPixmap(QPixmap::fromImage(newImage));
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
@@ -94,16 +96,16 @@ void MainWindow::dropEvent(QDropEvent *event)
     }
 
     static QStringList sss({
-                               "text/x-moz-url",
-                               "text/uri-list",
-                               "text/plain",
-                               "text/html",
-//                               "application/x-qt-windows-mime;value=\"DragImageBits\"",
-//                               "application/x-qt-windows-mime;value=\"DragContext\"",
-//                               "application/x-qt-windows-mime;value=\"chromium/x-renderer-taint\"",
-//                               "application/x-qt-windows-mime;value=\"FileGroupDescriptorW\"",
-//                               "application/x-qt-windows-mime;value=\"FileContents\"",
-//                               "application/x-qt-windows-mime;value=\"UniformResourceLocatorW\"",
+//                               "text/x-moz-url",
+//                               "text/uri-list",
+//                               "text/plain",
+//                               "text/html",
+                               "application/x-qt-windows-mime;value=\"DragImageBits\"",
+                               "application/x-qt-windows-mime;value=\"DragContext\"",
+                               "application/x-qt-windows-mime;value=\"chromium/x-renderer-taint\"",
+                               "application/x-qt-windows-mime;value=\"FileGroupDescriptorW\"",
+                               "application/x-qt-windows-mime;value=\"FileContents\"",
+                               "application/x-qt-windows-mime;value=\"UniformResourceLocatorW\"",
                            });
     for(auto&& format:sss)
     {
@@ -115,17 +117,25 @@ void MainWindow::dropEvent(QDropEvent *event)
         }
     }
 
-    if(event->mimeData()->hasFormat("application/x-qt-windows-mime"))
-    {
-        event->mimeData()->data("application/x-qt-windows-mime");
-        return;
-    }
-
-//    else if(event->mimeData()->hasHtml())
+//    if(event->mimeData()->hasFormat("application/x-qt-windows-mime"))
 //    {
-//        QString html = event->mimeData()->html();
-//        QMessageBox::information(this,"",html);
+//        event->mimeData()->data("application/x-qt-windows-mime");
+//        return;
 //    }
+
+    if(event->mimeData()->hasHtml())
+    {
+        QString html = event->mimeData()->html();
+        html=html.replace("\r","");
+        html=html.replace("\n","");
+        HTMLParser parser(this);
+        parser.parse(html);
+        for(auto&& obj : parser.children())
+        {
+            obj->dumpObjectTree();
+        }
+        QMessageBox::information(this,"",html);
+    }
 //    else if (event->mimeData()->hasUrls())
 //    {
 //        QStringList pathList;

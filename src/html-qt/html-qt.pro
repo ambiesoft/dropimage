@@ -1,6 +1,7 @@
-QT       += core gui
+QT -= gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+TEMPLATE = lib
+DEFINES += HTMLQT_LIBRARY
 
 CONFIG += c++11
 
@@ -16,26 +17,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+    htmlabstractphase.cpp \
+    htmlbeforehtmlphase.cpp \
+    htmlinitialphase.cpp \
+    htmlparser.cpp \
+    htmltokenizer.cpp \
+    htmltree.cpp
 
 HEADERS += \
-    mainwindow.h
-
-FORMS += \
-    mainwindow.ui
+    html-qt_global.h \
+    htmlabstractphase.h \
+    htmlbeforehtmlphase.h \
+    htmlinitialphase.h \
+    htmlparser.h \
+    htmlparser_p.h \
+    htmltokenizer.h \
+    htmltokenizer_p.h \
+    htmltree.h
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+unix {
+    target.path = /usr/lib
+}
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    info.txt
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/html-qt/release/ -lhtml-qt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/html-qt/debug/ -lhtml-qt
-else:unix: LIBS += -L$$OUT_PWD/html-qt/ -lhtml-qt
-
-INCLUDEPATH += $$PWD/html-qt
-DEPENDPATH += $$PWD/html-qt
+    CMakeLists.txt \
+    entities.json \
+    html-qt.doxygen \
+    html-qt5.pc.in
